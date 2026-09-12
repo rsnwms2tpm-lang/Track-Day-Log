@@ -1,0 +1,13 @@
+{
+  "name": "Track Day Log",
+  "short_name": "Track Day Log",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#101215",
+  "description": "Prepare for track days, log sessions, tyre pressures, lap notes and post-event jobs.",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
