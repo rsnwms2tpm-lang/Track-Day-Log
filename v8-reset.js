@@ -1,0 +1,2 @@
+/* Track Day Log V8: one-time clean-start link */
+(()=>{if(new URLSearchParams(location.search).get('fresh')!=='1')return;try{localStorage.removeItem('trackDayLogV1');localStorage.removeItem('trackDayLogSyncKeyV1');sessionStorage.clear()}catch(e){}const clean=location.origin+location.pathname;location.replace(clean)})();
