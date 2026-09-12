@@ -1,10 +1,10 @@
-const CACHE='track-day-log-v6';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./icon.svg','./v6-patch.js'];
+const CACHE='track-day-log-v7';
+const ASSETS=['./','./index.html','./manifest.webmanifest','./icon.svg','./v6-patch.js','./v7-patch.js'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  const req=event.request,nav=req.mode==='navigate'||(req.headers.get('accept')||'').includes('text/html');
- if(nav){event.respondWith((async()=>{try{const res=await fetch(req,{cache:'no-store'}),html=await res.text();const patched=html.includes('v6-patch.js')?html:html.replace('</body>','<script src="./v6-patch.js?v=6"></script></body>');return new Response(patched,{status:res.status,statusText:res.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}})}catch(e){const cached=await caches.match('./index.html');if(!cached)return new Response('Offline',{status:503});const html=await cached.text();return new Response(html.replace('</body>','<script src="./v6-patch.js?v=6"></script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8'}})}})());return}
+ if(nav){event.respondWith((async()=>{try{const res=await fetch(req,{cache:'no-store'}),html=await res.text();let patched=html;if(!patched.includes('v6-patch.js'))patched=patched.replace('</body>','<script src="./v6-patch.js?v=7"></script></body>');if(!patched.includes('v7-patch.js'))patched=patched.replace('</body>','<script src="./v7-patch.js?v=7"></script></body>');return new Response(patched,{status:res.status,statusText:res.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}})}catch(e){const cached=await caches.match('./index.html');if(!cached)return new Response('Offline',{status:503});let html=await cached.text();if(!html.includes('v6-patch.js'))html=html.replace('</body>','<script src="./v6-patch.js?v=7"></script></body>');if(!html.includes('v7-patch.js'))html=html.replace('</body>','<script src="./v7-patch.js?v=7"></script></body>');return new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8'}})}})());return}
  event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(res=>{if(res&&res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return res})));
 });
